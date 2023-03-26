@@ -9,12 +9,19 @@ __author__ = "Dr June Moone"
 __webpage__ = "https://github.com/MooneDrJune"
 __license__ = "MIT"
 
+
+import os
+
 import requests
 
 from json import JSONDecodeError
 
 HEADERS = {"Content-Type": "application/json"}
-URL = "https://developers.symphonyfintech.in/marketdata/instruments/master"
+BASE_URL = "https://developers.symphonyfintech.in/marketdata/instruments"
+MASTER = "/master"
+INDEXLIST = "/indexlist"
+IL_PARAMS_NSE = {"exchangeSegment": 1}
+IL_PARAMS_BSE = {"exchangeSegment": 11}
 
 CM_HDR = "ExchangeSegment|ExchangeInstrumentID|InstrumentType|Name|Description|Series|NameWithSeries|InstrumentID|PriceBandHigh|PriceBandLow| FreezeQty|TickSize|LotSize|Multiplier|displayName|ISIN|PriceNumerator|PriceDenominator|FullDescription\n"
 FO_HDR = "ExchangeSegment|ExchangeInstrumentID|InstrumentType|Name|Description|Series|NameWithSeries|InstrumentID|PriceBandHigh|PriceBandLow|FreezeQty|TickSize|LotSize|Multiplier|UnderlyingInstrumentId|UnderlyingIndexName|ContractExpiration|StrikePrice|OptionType|displayName|PriceNumerator|PriceDenominator|FullDescription\n"
@@ -45,10 +52,11 @@ def find_nth(haystack, needle, n):
 
 
 if __name__ == "__main__":
+    os.makedirs(os.path.join(os.getcwd(), "csv"), exist_ok=True)
     with requests.session() as session:
         for exchange in exchangeSegmentList:
             response = session.post(
-                URL,
+                BASE_URL + MASTER,
                 headers=HEADERS,
                 json=dict(exchangeSegmentList=[exchange]),  # noqa E501
             )
@@ -71,10 +79,9 @@ if __name__ == "__main__":
                         and data.get("description")
                         and data.get("result")
                         and data.get("type").find("success") != -1
-                        and data.get("code").find("s-instrument-0010") != -1
                         and data.get("description").find("instrument data") != -1
                     ):
-                        with open(f"{exchange}.csv", "w") as file:
+                        with open(f"csv/{exchange}.csv", "w") as file:
                             if exchange[-2:].find("CM") != -1:
                                 file.write(
                                     (CM_HDR + data["result"]).replace("|", ",")
@@ -99,3 +106,47 @@ if __name__ == "__main__":
                                         .split("\n")
                                     )
                                 )
+        for exchange, params in (
+            ("NSECM", IL_PARAMS_NSE),
+            ("BSECM", IL_PARAMS_BSE),
+        ):  # noqa E501
+            response = session.get(
+                BASE_URL + INDEXLIST,
+                params=params,  # noqa E501
+            )
+            if response.status_code == 200:
+                try:
+                    data = response.json()
+                except JSONDecodeError:
+                    print(
+                        f"Failed to Decode Response Json for params: {params}",  # noqa E501
+                        f"Respose was: {response.content.decode('utf-8')}",
+                        "Continuing Loop to fetch other exchange...",
+                        sep="\n",
+                        end="\n\n",
+                    )
+                    continue
+                else:
+                    if (
+                        data.get("type")
+                        and data.get("code")
+                        and data.get("description")
+                        and data.get("result")
+                        and data.get("type").find("success") != -1
+                        and data.get("description").find(
+                            "Index List successfully"
+                        )  # noqa E501
+                        != -1
+                    ):
+                        with open(f"csv/{exchange}_INDEX.csv", "w") as file:
+                            file.write(
+                                (
+                                    "Name,InstrumentID\n"
+                                    + "\n".join(
+                                        index.replace("_", ",")
+                                        for index in data.get("result").get(
+                                            "indexList"
+                                        )  # noqa E501
+                                    )
+                                )
+                            )  # noqa E501
