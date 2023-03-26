@@ -1,11 +1,11 @@
 name: Update XTS Master Instruments
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     branches:
+#       - main
   schedule:
     - cron:  '30 2 * * 1-5'
     - cron:  '27 15 * * 1-5'
