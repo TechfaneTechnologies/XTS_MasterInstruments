@@ -7,15 +7,17 @@ Check for updates daily at 08:00 AM IST and 09:00 PM IST.
 
 
 ## ExchangeSegment Wise CSV Files.
-- [NSECM.json](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/NSECM.csv)
-- [NSEFO.json](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/NSEFO.csv)
-- [NSECD.json](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/NSECD.csv)
-- [BSECM.json](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/BSECM.csv)
-- [BSEFO.json](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/BSEFO.csv)
-- [BSECO.json](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/BSECO.csv)
-- [BSECD.json](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/BSECD.csv)
-- [NCDEX.json](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/NCDEX.csv)
-- [MCXFO.json](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/MCXFO.csv)
+- [NSECM_INDEX.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/NSECM_INDEX.csv)
+- [NSECM.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/NSECM.csv)
+- [NSEFO.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/NSEFO.csv)
+- [NSECD.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/NSECD.csv)
+- [BSECM_INDEX.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/BSECM_INDEX.csv)
+- [BSECM.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/BSECM.csv)
+- [BSEFO.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/BSEFO.csv)
+- [BSECO.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/BSECO.csv)
+- [BSECD.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/BSECD.csv)
+- [NCDEX.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/NCDEX.csv)
+- [MCXFO.csv](https://techfanetechnologies.github.io/XTS_MasterInstruments/csv/MCXFO.csv)
 
 ## _If You have liked the work, Do Star This Repository and Stay-Up-To-Date_
 <p align="center">
