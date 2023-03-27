@@ -53,68 +53,22 @@ def find_nth(haystack, needle, n):
 
 if __name__ == "__main__":
     os.makedirs(os.path.join(os.getcwd(), "csv"), exist_ok=True)
+    exchange_wise_MC = dict.fromkeys(exchangeSegmentList, "")
+    exchange_wise_MC_Idx = dict.fromkeys(["NSECM", "BSECM"], "")
     with requests.session() as session:
-        for exchange in exchangeSegmentList:
-            response = session.post(
-                BASE_URL + MASTER,
-                headers=HEADERS,
-                json=dict(exchangeSegmentList=[exchange]),  # noqa E501
-            )
-            if response.status_code == 200:
-                try:
-                    data = response.json()
-                except JSONDecodeError:
-                    print(
-                        f"Failed to Decode Response Json for Exchange: {exchange}",  # noqa E501
-                        f"Respose was: {response.content.decode('utf-8')}",
-                        "Continuing Loop to fetch other exchange...",
-                        sep="\n",
-                        end="\n\n",
-                    )
-                    continue
-                else:
-                    if (
-                        data.get("type")
-                        and data.get("code")
-                        and data.get("description")
-                        and data.get("result")
-                        and data.get("type").find("success") != -1
-                        and data.get("description").find("instrument data") != -1
-                    ):
-                        with open(f"csv/{exchange}.csv", "w") as file:
-                            if exchange[-2:].find("CM") != -1:
-                                file.write(
-                                    (CM_HDR + data["result"]).replace("|", ",")
-                                )  # noqa E501
-                            else:
-                                file.write(
-                                    FO_HDR.replace("|", ",")
-                                    + "\n".join(
-                                        lines[: find_nth(lines, ",", 17)]
-                                        + ",0,0"
-                                        + lines[find_nth(lines, ",", 17) :]
-                                        if lines.count(",") == 20
-                                        else lines[
-                                            : find_nth(lines, ",", 14)
-                                        ]  # noqa E501
-                                        + ",-1,,,0,0"
-                                        + lines[find_nth(lines, ",", 14) :]
-                                        if lines.count(",") == 17
-                                        else lines
-                                        for lines in data["result"]
-                                        .replace("|", ",")
-                                        .split("\n")
-                                    )
-                                )
         for exchange, params in (
             ("NSECM", IL_PARAMS_NSE),
             ("BSECM", IL_PARAMS_BSE),
         ):  # noqa E501
-            response = session.get(
-                BASE_URL + INDEXLIST,
-                params=params,  # noqa E501
-            )
-            if response.status_code == 200:
+            try:
+                response = session.get(
+                    BASE_URL + INDEXLIST,
+                    params=params,  # noqa E501
+                )
+                response.raise_for_status()
+            except requests.exceptions.RequestException as _exception:
+                print(str(_exception))
+            else:
                 try:
                     data = response.json()
                 except JSONDecodeError:
@@ -127,26 +81,84 @@ if __name__ == "__main__":
                     )
                     continue
                 else:
-                    if (
-                        data.get("type")
-                        and data.get("code")
-                        and data.get("description")
-                        and data.get("result")
-                        and data.get("type").find("success") != -1
-                        and data.get("description").find(
-                            "Index List successfully"
-                        )  # noqa E501
-                        != -1
-                    ):
-                        with open(f"csv/{exchange}_INDEX.csv", "w") as file:
-                            file.write(
-                                (
-                                    "Name,InstrumentID\n"
-                                    + "\n".join(
-                                        index.replace("_", ",")
-                                        for index in data.get("result").get(
-                                            "indexList"
-                                        )  # noqa E501
-                                    )
-                                )
+                    exchange_wise_MC_Idx[exchange] = data
+        for exchange in exchangeSegmentList:
+            try:
+                response = session.post(
+                    BASE_URL + MASTER,
+                    headers=HEADERS,
+                    json=dict(exchangeSegmentList=[exchange]),  # noqa E501
+                )
+                response.raise_for_status()
+            except requests.exceptions.RequestException as _exception:
+                print(str(_exception))
+            else:
+                try:
+                    data = response.json()
+                except JSONDecodeError:
+                    print(
+                        f"Failed to Decode Response Json for Exchange: {exchange}",  # noqa E501
+                        f"Respose was: {response.content.decode('utf-8')}",
+                        "Continuing Loop to fetch other exchange...",
+                        sep="\n",
+                        end="\n\n",
+                    )
+                    continue
+                else:
+                    exchange_wise_MC[exchange] = data
+
+    for exchange, data in exchange_wise_MC.items():
+        if (
+            data != ""
+            and isinstance(data, dict)
+            and data.get("type")
+            and data.get("code")
+            and data.get("description")
+            and data.get("result")
+            and data.get("type").find("success") != -1
+            and data.get("description").find("instrument data") != -1
+        ):
+            with open(f"csv/{exchange}.csv", "w") as file:
+                if exchange[-2:].find("CM") != -1:
+                    file.write((CM_HDR + data["result"]).replace("|", ","))  # noqa E501
+                else:
+                    file.write(
+                        FO_HDR.replace("|", ",")
+                        + "\n".join(
+                            lines[: find_nth(lines, ",", 17)]
+                            + ",0,0"
+                            + lines[find_nth(lines, ",", 17) :]
+                            if lines.count(",") == 20
+                            else lines[: find_nth(lines, ",", 14)]  # noqa E501
+                            + ",-1,,,0,0"
+                            + lines[find_nth(lines, ",", 14) :]
+                            if lines.count(",") == 17
+                            else lines
+                            for lines in data["result"].replace("|", ",").split("\n")
+                        )
+                    )
+    for exchange, data in exchange_wise_MC_Idx.items():
+        if (
+            data != ""
+            and isinstance(data, dict)
+            and data.get("type")
+            and data.get("code")
+            and data.get("description")
+            and data.get("result")
+            and data.get("type").find("success") != -1
+            and data.get("description").find("Index List successfully")  # noqa E501
+            != -1
+        ):
+            with open(f"csv/{exchange}_INDEX.csv", "w") as file:
+                file.write(
+                    (
+                        "Name,InstrumentID\n"
+                        + "\n".join(
+                            index.replace("_", ",")
+                            for index in data.get("result").get(
+                                "indexList"
                             )  # noqa E501
+                        )
+                    )
+                )  # noqa E501
+
