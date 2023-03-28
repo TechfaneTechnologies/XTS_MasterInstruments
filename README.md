@@ -1,3 +1,4 @@
+[![Deploy static content to Pages](https://github.com/TechfaneTechnologies/XTS_MasterInstruments/actions/workflows/static.yml/badge.svg)](https://github.com/TechfaneTechnologies/XTS_MasterInstruments/actions/workflows/static.yml)      [![Update XTS Master Instruments](https://github.com/TechfaneTechnologies/XTS_MasterInstruments/actions/workflows/main.yml/badge.svg)](https://github.com/TechfaneTechnologies/XTS_MasterInstruments/actions/workflows/main.yml)
 # XTS Master Instruments / Contracts
 Symphony Fintech XTS API Instrument / Contract Masters CSV's. It allows to download master contract as CSV Files. The master contract contains all necessary information about all available contracts. Gets all contracts or filter contracts by exchange segment.
 
