@@ -17,7 +17,7 @@ import requests
 from json import JSONDecodeError
 
 HEADERS = {"Content-Type": "application/json"}
-BASE_URL = "https://developers.symphonyfintech.in/marketdata/instruments"
+BASE_URL = "https://developers.symphonyfintech.in/apimarketdata/instruments"
 MASTER = "/master"
 INDEXLIST = "/indexlist"
 IL_PARAMS_NSE = {"exchangeSegment": 1}
