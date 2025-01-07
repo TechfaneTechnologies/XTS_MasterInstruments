@@ -1,11 +1,11 @@
 name: Update XTS Master Instruments
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  #   branches:
+  #     - main
   schedule:
     - cron:  '23 2 * * 1-5'
     - cron:  '23 15 * * 1-5'
@@ -18,13 +18,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     # Build steps
-    - uses: actions/setup-python@v4
-      with:
-        python-version: '3.10.x'
-    - run: python --version
-    - run: pip install -r requirements.txt
-    - run: python main.py
-      
+    # - uses: actions/setup-python@v4
+    #   with:
+    #     python-version: '3.10.x'
+    # - run: python --version
+    # - run: pip install -r requirements.txt
+    # - run: python main.py
+    - run: chmod +x ./xts_jobs && ./xts_jobs
     # Commit and push all changed files.
     - name: GIT Commit Build Artifacts (coverage, dist, devdist, docs)
       # Only run on main branch push (e.g. after pull request merge).
