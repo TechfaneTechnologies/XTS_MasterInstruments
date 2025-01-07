@@ -24,7 +24,7 @@ jobs:
     # - run: python --version
     # - run: pip install -r requirements.txt
     # - run: python main.py
-    - run: chmod +x ./xts_jobs && ./xts_jobs
+    - run: ldd --version && chmod +x ./xts_jobs && ./xts_jobs
     # Commit and push all changed files.
     - name: GIT Commit Build Artifacts (coverage, dist, devdist, docs)
       # Only run on main branch push (e.g. after pull request merge).
