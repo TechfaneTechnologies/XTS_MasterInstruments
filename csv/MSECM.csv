@@ -1,2 +1,2 @@
-ExchangeSegment,ExchangeInstrumentID,InstrumentType,Name,Description,Series,NameWithSeries,InstrumentID,PriceBandHigh,PriceBandLow,FreezeQty,TickSize,LotSize,Multiplier,displayName,ISIN,PriceNumerator,PriceDenominator,FullDescription
+ExchangeSegment,ExchangeInstrumentId,InstrumentType,Name,Description,Series,NameWithSeries,InstrumentId,PriceBandHigh,PriceBandLow,FreezeQty,TickSize,LotSize,Multiplier,DisplayName,Isin,PriceNumerator,PriceDenominator,DetailedDescription,UnknownFieldOne,UnknownFieldTwo,UnknownFieldThree
 
